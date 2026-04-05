@@ -31,7 +31,7 @@ def load_data():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     vectorstore = FAISS.from_documents(docs, embeddings)
-    return vectorstore.as_retriever(search_kwargs={"k": 4})
+    return vectorstore.as_retriever(search_kwargs={"k": 8})
 
 retriever = load_data()
 
