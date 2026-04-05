@@ -31,7 +31,7 @@ def load_data():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     vectorstore = FAISS.from_documents(docs, embeddings)
-    return vectorstore.as_retriever(search_kwargs={"k": 8})
+    return vectorstore.as_retriever(search_kwargs={"k": 8, "fetch_k": 20})
 
 retriever = load_data()
 
@@ -41,14 +41,23 @@ retriever = load_data()
 prompt = ChatPromptTemplate.from_template("""
 You are an AI assistant for Edibleaf products.
 
+Your job:
+- Understand the user question clearly
+- Find relevant products from context even if exact words are not matching
+- Recommend suitable products based on their usage
+
 Rules:
 - Answer ONLY from given context
-- Focus on product benefits and natural preparation
-- Convert strong medical claims into general wellness language
-- Use phrases like "may help", "traditionally used"
+- Do NOT say "not available" if related products exist
+- Infer answers from product descriptions
+- Focus on benefits and usage
+- Convert strong claims into "may help", "traditionally used"
 - Do NOT give medical advice
-- Answer in short sentence, bullet list, and small paragraph
-- If not found, say: "Not available in catalogue"
+
+Answer format:
+1. Short sentence
+2. Bullet points
+3. Small paragraph
 
 Context:
 {context}
